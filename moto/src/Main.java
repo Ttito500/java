@@ -2,12 +2,12 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        Motorcycle motoca = new Motorcycle(1);
         while(true) {
             String line = input();
             args = line.split(" ");
             write('$' + line);
 
-            Motorcycle motoca = new Motorcycle(1);
             if      (args[0].equals("show"))     { System.out.println(motoca.toString());                         }
             else if (args[0].equals("init"))     { motoca = new Motorcycle(number(args[1]));           }
             else if (args[0].equals("enter"))    { motoca.enter(new Person(args[1], number(args[2]))); }
@@ -43,6 +43,14 @@ class Person {
         return age;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
         return "Person{" + "name='" + name + '\'' + ", age=" + age + '}';
@@ -75,14 +83,14 @@ class Motorcycle {
     }
 
     //Se estiver vazio, coloca a pessoa na moto e retorna true
-    public boolean enter(Person entry) {
+    public void enter(Person entry) {
         if (person == null) {
             person = entry;
-            return true;
+            System.out.println(entry.getName());
         } else {
             System.out.println("fail: busy motorcycle");
-            return false;
         }
+        System.out.println(person.getName());
     }
     public void leave() {
         if (person == null){

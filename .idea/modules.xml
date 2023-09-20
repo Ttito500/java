@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Animal/Animal.iml" filepath="$PROJECT_DIR$/Animal/Animal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/IdeaProjects.iml" filepath="$PROJECT_DIR$/.idea/IdeaProjects.iml" />
+      <module fileurl="file://$PROJECT_DIR$/calc/calc.iml" filepath="$PROJECT_DIR$/calc/calc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/carro/carro.iml" filepath="$PROJECT_DIR$/carro/carro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dento/dento.iml" filepath="$PROJECT_DIR$/dento/dento.iml" />
+      <module fileurl="file://$PROJECT_DIR$/grafite/grafite.iml" filepath="$PROJECT_DIR$/grafite/grafite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/media/media.iml" filepath="$PROJECT_DIR$/media/media.iml" />
+      <module fileurl="file://$PROJECT_DIR$/moto/moto.iml" filepath="$PROJECT_DIR$/moto/moto.iml" />
+      <module fileurl="file://$PROJECT_DIR$/relogio/relogio.iml" filepath="$PROJECT_DIR$/relogio/relogio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tamagochi/tamagochi.iml" filepath="$PROJECT_DIR$/tamagochi/tamagochi.iml" />
+    </modules>
+  </component>
+</project>
