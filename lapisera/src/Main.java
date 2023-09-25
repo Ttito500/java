@@ -11,12 +11,14 @@ public class Main {
             String[] argsL = line.split(" ");
             write('$' + line);
 
-            if      ("end".equals(argsL[0])   ) { break;                                                                    }
+            if      ("end".equals(argsL[0])   ) { break;                                                                       }
             else if ("init".equals(argsL[0])  ) { pencil = new Pencil(number(argsL[1]));                                       }
             else if ("insert".equals(argsL[0])) { pencil.insert(new Lead(number(argsL[1]), argsL[2], (int) number(argsL[3]))); }
             else if ("remove".equals(argsL[0])) { pencil.remove();                                                             }
             else if ("write".equals(argsL[0]) ) { pencil.writePage();                                                          }
-            else if ("show".equals(argsL[0])  ) { write(pencil.toString());                                                               }
+            else if ("show".equals(argsL[0])  ) { write(pencil.toString());                                                    }
+            else if ("pull".equals(argsL[0])  ) { pencil.pull();                                                               }
+
         }
     }
 
@@ -105,11 +107,12 @@ class Pencil {
         }
     }
 
-    public void pull(Lead grafite) {
+    public void pull() {
         if (hasGrafite()){
-            System.out.println("fail: ja existe grafite");
+            System.out.println("fail: ja existe grafite no bico");
         } else {
-            tip = barrel.get(barrel.size() - 1);
+            tip = barrel.get(0);
+            barrel.remove(0);
         }
     }
 
@@ -130,16 +133,21 @@ class Pencil {
                 System.out.println("fail: tamanho insuficiente");
             }
         } else {
-            System.out.println("fail: nao existe grafite");
+            System.out.println("fail: nao existe grafite no bico");
         }
     }
 
     public String toString() {
-        String saida = "calibre: " + thickness + ", grafite: ";
-        if (tip != null)
-            saida += "[" + tip + "]";
-        else
-            saida += "null";
-        return saida;
+        String saida = "calibre: " + thickness + ", bico: ";
+        if (this.tip != null) {
+            saida += "[" + this.tip + "]";
+        } else {
+            saida += "[]";
+        }
+        saida += ", tambor: {";
+        for (Lead g : barrel) {
+            saida += "[" + g + "]";
+        }
+        return saida + "}";
     }
 }
