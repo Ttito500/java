@@ -8,11 +8,14 @@ public class Main {
             args = line.split(" ");
             write('$' + line);
 
-            if      (args[0].equals("show"))     { System.out.println(motoca.toString());                         }
+            if      (args[0].equals("show"))     { System.out.println(motoca.toString());              }
             else if (args[0].equals("init"))     { motoca = new Motorcycle(number(args[1]));           }
             else if (args[0].equals("enter"))    { motoca.enter(new Person(args[1], number(args[2]))); }
             else if (args[0].equals("end"))      { break;                                              }
             else if (args[0].equals("leave"))    {motoca.leave();                                      }
+            else if (args[0].equals("honk"))     {motoca.honk();                                       }
+            else if (args[0].equals("buy"))      {motoca.buyTime(Integer.parseInt(args[1]));           }
+            else if (args[0].equals("drive"))    {motoca.drive(Integer.parseInt(args[1]));             }
             else {
                 System.out.println("fail: comando invalido");
             }
@@ -86,17 +89,36 @@ class Motorcycle {
     public void enter(Person entry) {
         if (person == null) {
             person = entry;
-            System.out.println(entry.getName());
         } else {
             System.out.println("fail: busy motorcycle");
         }
-        System.out.println(person.getName());
     }
     public void leave() {
         if (person == null){
             System.out.println("fail: empty motorcycle");
         } else {
             person = null;
+        }
+    }
+
+    void honk(){
+        System.out.print("p");
+        for(int i = 0; i < power; i++){
+            System.out.print("e");
+        }
+        System.out.println("m");
+    }
+
+    void buyTime(int value){
+        time = value;
+    }
+
+    void drive(int value){
+        int guarda = time;
+        time -= value;
+        if (time < 0){
+            System.out.printf("fail: time finished after %d minutes\n", guarda);
+            time = 0;
         }
     }
     public String toString() {
