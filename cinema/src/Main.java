@@ -47,34 +47,72 @@ class Sala{
         return null;
     }
 
+    Boolean search(Client esse) {
+        for (int i = 0; i < cadeiras.size(); i++) {
+            if (cadeiras.get(i) != null && cadeiras.get(i).getId().equals(esse.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean reservar(String id, String fone, int ind) {
-        if (cadeiras.get(ind) == null){
-            Client set = new Client(id, fone);
-            cadeiras.set(ind, set);
-            return false;
-        }else {
-            System.out.println("fail: cadeira ja esta ocupada");
+        if (cadeiras.size() > ind) {
+            if (cadeiras.get(ind) == null) {
+                Client esse = new Client(id, fone);
+                if (search(esse)) {
+                    System.out.println("fail: cliente ja esta no cinema");
+                    return false;
+                } else {
+                    Client set = new Client(id, fone);
+                    cadeiras.set(ind, set);
+                    return true;
+                }
+            } else {
+                System.out.println("fail: cadeira ja esta ocupada");
+                return false;
+            }
+        } else {
+            System.out.println("fail: cadeira nao existe");
             return false;
         }
     }
 
+
     public void cancelar(String id) {
+        boolean acho = false;
+        for (int i = 0; i < cadeiras.size(); i++){
+            if (cadeiras.get(i) != null && cadeiras.get(i).getId().equals(id)){
+                cadeiras.set(i, null);
+                acho = true;
+                break;
+            }
+        }
+        if (!acho){
+            System.out.println("fail: cliente nao esta no cinema");
+        }
     }
 
     @Override
     public String toString() {
-        String saida = "[ ";
-        for (Client cliente : cadeiras) {
-            if(cliente == null)
-                saida += "- ";
-            else
-                saida += cliente + " ";
+        StringBuilder saida = new StringBuilder("[");
+        for (int i = 0; i < cadeiras.size(); i++) {
+            if (i > 0) {
+                saida.append(" ");
+            }
+            if (cadeiras.get(i) == null) {
+                saida.append("-");
+            } else {
+                saida.append(cadeiras.get(i));
+            }
         }
-        return saida + "]";
+        saida.append("]");
+        return saida.toString();
     }
+
 }
 
-class Solver {
+class Main {
     static Shell sh = new Shell();
     static Sala sala = new Sala(0);
 
