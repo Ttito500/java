@@ -19,11 +19,7 @@ enum Coin {
 
     @Override
     public String toString() {
-        return "Coin{" +
-                "value=" + value +
-                ", volume=" + volume +
-                ", label='" + label + '\'' +
-                '}';
+        return String.format("%.2f:%d", value, volume);
     }
 }
 
@@ -55,10 +51,7 @@ class Item {
 
     @Override
     public String toString() {
-        return "Item{" +
-                "label='" + label + '\'' +
-                ", volume=" + volume +
-                '}';
+        return label + ":" + volume;
     }
 }
 
@@ -94,51 +87,95 @@ class Pig {
     }
 
     public boolean addCoin(Coin coin) throws Exception {
-        if (!broken){
-            if (getVolume() + coin.volume <= volumeMax){
+        if (!broken) {
+            if (getVolume() + coin.volume <= volumeMax) {
                 coins.add(coin);
                 return true;
             } else {
-                return false;
+                throw new Exception("fail: the pig is full");
             }
         } else {
-            return false;
+            throw new Exception("fail: the pig is broken");
         }
     }
 
     public boolean addItem(Item item) throws Exception {
-
+        if (!broken) {
+            if (getVolume() + item.getVolume() <= volumeMax) {
+                items.add(item);
+                return true;
+            } else {
+                throw new Exception("fail: the pig is full");
+            }
+        } else {
+            throw new Exception("fail: the pig is broken");
+        }
     }
 
     public boolean breakPig() {
-        if (broken){
+        if (broken) {
             return false;
-        }else {
+        } else {
             this.broken = true;
             return true;
         }
     }
 
     public ArrayList<String> extractCoins() throws Exception {
+        if (broken) {
+            List<Coin> buffer = coins;
+            coins = new ArrayList<>();
+            ArrayList<String> out = new ArrayList<String>();
+            for (int i = 0; i < buffer.size(); i++) {
+                out.add(buffer.get(i).toString());
+            }
+            return out;
+        }
+        return null;
     }
 
     public ArrayList<String> extractItems() throws Exception {
+        if (broken) {
+            List<Item> buffer = items;
+            items = new ArrayList<>();
+            ArrayList<String> out = new ArrayList<String>();
+            for (
+                    int i = 0; i < buffer.size(); i++) {
+                out.add(buffer.get(i).toString());
+            }
+            return out;
+        }
+        return null;
     }
 
     @Override
     public String toString() {
+        String state = broken ? "broken" : "intact";
+        String coinStr = coins.stream()
+                .map(coin -> coin.toString())
+                .collect(Collectors.joining(", "));
+        String itemStr = items.stream()
+                .map(item -> item.toString())
+                .collect(Collectors.joining(", "));
+
+        return "state=" + state + " : coins=[" + coinStr + "] : items=[" + itemStr + "] : value=" + String.format("%.2f", getValue()) + " : volume=" + getVolume() + "/" + volumeMax;
     }
 
+
     public int getVolume() {
-        if (coins != null){
-            int volume = 0;
-            for (Coin coin : coins) {
-                volume += coin.volume;
+        if (!broken) {
+            if (coins != null) {
+                int volume = 0;
+                for (Coin coin : coins) {
+                    volume += coin.volume;
+                }
+                for (Item item : items) {
+                    volume += item.getVolume();
+                }
+                return volume;
+            } else {
+                return 0;
             }
-            for (Item item : items) {
-                volume += item.getVolume();
-            }
-            return volume;
         } else {
             return 0;
         }
@@ -178,17 +215,52 @@ public class Solver {
             println("$" + line);
             String[] args = line.split(" ");
 
-            if      (args[0].equals("end"))          { break; }
-            else if (args[0].equals("init"))         { pig = new Pig( (int) number(args[1]) ); }
-            else if (args[0].equals("show"))         { println(pig); }
-            else if (args[0].equals("addCoin"))      { pig.addCoin( pig.createCoin( args[1] ) ); }
-            else if (args[0].equals("addItem"))      { pig.addItem( new Item( args[1], (int) number(args[2]) ) ); }
-            else if (args[0].equals("break"))        { pig.breakPig(); }
-            else if (args[0].equals("extractCoins")) { println("[" + String.join(", ", pig.extractCoins()) + "]"); }
-            else if (args[0].equals("extractItems")) { println("[" + String.join(", ", pig.extractItems()) + "]"); }
-            else                                     { println("fail: comando invalido"); }
+            if (args[0].equals("end")) {
+                break;
+            } else if (args[0].equals("init")) {
+                pig = new Pig((int) number(args[1]));
+            } else if (args[0].equals("show")) {
+                println(pig);
+            } else if (args[0].equals("addCoin")) {
+                try {
+                    pig.addCoin(pig.createCoin(args[1]));
+                } catch (Exception e) {
+                    if (e.getMessage().equals("fail: the pig is broken")) {
+                        System.out.println("fail: the pig is broken");
+                    } else if (e.getMessage().equals("fail: the pig is full")) {
+                        System.out.println("fail: the pig is full");
+                    }
+                }
+            } else if (args[0].equals("addItem")) {
+                try {
+                    pig.addItem(new Item(args[1], (int) number(args[2])));
+                } catch (Exception e) {
+                    if (e.getMessage().equals("fail: the pig is broken")) {
+                        System.out.println("fail: the pig is broken");
+                    } else if (e.getMessage().equals("fail: the pig is full")) {
+                        System.out.println("fail: the pig is full");
+                    }
+                }
+            } else if (args[0].equals("break")) {
+                pig.breakPig();
+            } else if (args[0].equals("extractCoins")) {
+                try {
+                    println("[" + String.join(", ", pig.extractCoins()) + "]");
+                } catch (Exception e) {
+                    System.out.println("fail: you must break the pig first\n[]");
+                }
+            } else if (args[0].equals("extractItems")) {
+                try {
+                    println("[" + String.join(", ", pig.extractItems()) + "]");
+                } catch (Exception e) {
+                    System.out.println("fail: you must break the pig first\n[]");
+                }
+            } else {
+                println("fail: comando invalido");
+            }
         }
     }
+
 
     private static Scanner scanner = new Scanner(System.in);
     private static String  input()                { return scanner.nextLine();        }
