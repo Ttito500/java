@@ -57,8 +57,13 @@ class Client {
         this.operations = new ArrayList<Operation>();
     }
 
+    private void sortOperations() {
+        this.operations.sort(Comparator.comparingInt(Operation::getId));
+    }
+
     @Override
     public String toString() {
+        sortOperations();
         String out = this.name + " " + this.getBalance() + "/" + this.limite + "\n";
         for ( Operation oper : this.operations ) {
             out += oper + "\n";
@@ -83,11 +88,11 @@ class Client {
     //quanto esta devendo
     public int getBalance() {
         int balance = 0;
-        for (int i = 0; i < operations.size(); i++){
-            if (operations.get(i).getLabel().equals("take") || operations.get(i).getLabel().equals("plus")){
-                balance -= operations.get(i).getValue();
+        for ( Operation oper : this.operations ) {
+            if ( oper.getLabel() == Label.TAKE ) {
+                balance -= oper.getValue();
             } else {
-                balance += operations.get(i).getValue();
+                balance += oper.getValue();
             }
         }
         return balance;
@@ -151,22 +156,36 @@ class Agiota {
     }
 
     public void give(String name, int value) throws Exception {
-        if (searchClient(name) != -1) {
-            Operation give = new Operation(name, Label.GIVE, value);
-            getClient(name).addOperation(give);
+        Client client = getClient(name);
+        if (client != null) {
+            if (client.getLimite() >= client.getBalance() + value) {
+                pushOperation(client, name, Label.GIVE, value);
+            } else {
+                throw new Exception("fail: limite excedido");
+            }
         } else {
             throw new Exception("fail: cliente nao existe");
         }
     }
 
+
     public void take(String name, int value) {
-        Operation give = new Operation(name, Label.GIVE, value);
-        getClient(name).addOperation(give);
+        Client client = getClient(name);
+        if (client != null) {
+            if (client.getBalance() >= value) {
+                pushOperation(client, name, Label.TAKE, value);
+            } else {
+                System.out.println("fail: saldo insuficiente");
+            }
+        } else {
+            System.out.println("fail: cliente nao existe");
+        }
     }
+
 
     public void kill(String name) {
         deathList.add(getClient(name));
-        aliveList.remove(getClient(name));
+        aliveList.set(searchClient(name), null);
     }
 
     public void plus() {
@@ -182,20 +201,25 @@ class Agiota {
     @Override
     public String toString() {
         String ss = "";
-        for ( Client client : this.aliveList ) {
-            ss += ":) " + client.getName() + " " + client.getBalance() + "/" + client.getLimite() + "\n";
+        for (Client client : this.aliveList) {
+            if (client != null) {
+                ss += ":) " + client.getName() + " " + client.getBalance() + "/" + client.getLimite() + "\n";
+            }
         }
-        for ( Operation oper : this.aliveOper ) {
+        for (Operation oper : this.aliveOper) {
             ss += "+ " + oper + "\n";
         }
-        for ( Client client : this.deathList ) {
-            ss += ":( " + client.getName() + " " + client.getBalance() + "/" + client.getLimite() + "\n";
+        for (Client client : this.deathList) {
+            if (client != null) {
+                ss += ":( " + client.getName() + " " + client.getBalance() + "/" + client.getLimite() + "\n";
+            }
         }
-        for ( Operation oper : this.deathOper ) {
+        for (Operation oper : this.deathOper) {
             ss += "- " + oper + "\n";
         }
         return ss;
     }
+
 }
 
 public class Solver {
