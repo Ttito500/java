@@ -23,11 +23,7 @@ class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "clientId='" + clientId + '\'' +
-                ", accounts=" + accounts +
-                '}';
-    }
+        return this.clientId + " [" + this.accounts.get(0).getId() + ", " + this.accounts.get(1).getId() + "]\n";    }
 }
 
 abstract class Account {
@@ -38,17 +34,21 @@ abstract class Account {
     protected String typeId;
 
     public Account(String clientId, String typeId) {
+        this.accId = nextAccountId++;
         this.clientId = clientId;
         this.typeId = typeId;
         this.balance = 0;
-        this.accId = nextAccountId;
     }
 
     public void deposit(double value ) {
         this.balance += value;
     }
-    public void withdraw( double value ) {
-        this.balance -= value;
+    public void withdraw( double value ) throws Exception {
+        if (balance >= value){
+            this.balance -= value;
+        } else {
+            throw new Exception("fail: saldo insuficiente");
+        }
     }
     public void transfer( Account other, double value ) {
         if (value <= balance){
@@ -59,15 +59,10 @@ abstract class Account {
 
     @Override
     public String toString() {
-        //        DecimalFormat d = new DecimalFormat("0.00"); //double x = 4.3; System.out.println( d.format(x) ); //4.30
-        return "Account{" +
-                "balance=" + balance +
-                ", accId=" + accId +
-                ", clientId='" + clientId + '\'' +
-                ", typeId='" + typeId + '\'' +
-                '}';
+        // 0:Almir:0.00:CC
+        DecimalFormat d = new DecimalFormat("0.00"); //double x = 4.3; System.out.println( d.format(x) ); //4.30
+        return this.accId + ":" + this.clientId + ":" + d.format(this.balance) + ":" + this.typeId + "\n";
     }
-
     public double getBalance() {
         return balance;
     }
@@ -142,12 +137,13 @@ class Agency {
         this.clients.put(clientId, esse);
 
         Account cc = new CheckingAccount(clientId);
-        accounts.put(cc.getId(), cc);
         Account cp = new SavingsAccount(clientId);
+
+        accounts.put(cc.getId(), cc);
         accounts.put(cp.getId(), cp);
 
         esse.addAccount(cc);
-        esse.addAccount(cc);
+        esse.addAccount(cp);
     }
 
     // procura pela conta usando o getAccount e realiza a operação de depósito
