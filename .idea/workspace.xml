@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="f1ecb386-16ce-4086-9d8b-9daaf4744811" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Animal/Animal.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calc/calc.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/carro/carro.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dento/dento.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grafite/grafite.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/media.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/moto/moto.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/relogio/relogio.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tamagochi/tamagochi.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/9. maps e enum/cadastro/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/9. maps e enum/cadastro/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,9 +17,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2VcmDh86Z52LJvazW8hMfIAQLYo" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -33,7 +30,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/tiago/IdeaProjects"
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/Emily Parente/IdeaProjects/9. maps e enum/cadastro"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

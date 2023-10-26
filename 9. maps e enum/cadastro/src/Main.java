@@ -87,6 +87,34 @@ abstract class Account {
     public abstract void updateMonthly();
 }
 
+class CheckingAccount extends Account {
+    protected double monthlyFee;
+
+    public CheckingAccount( String clientId ) {
+        super( clientId, "CC" );
+        this.monthlyFee = 20.0;
+    }
+
+    @Override
+    public void updateMonthly() {
+        this.balance -= this.monthlyFee;
+    }
+}
+
+class SavingsAccount extends Account {
+    protected double monthlyInterest;
+
+    public SavingsAccount( String clientId ) {
+        super( clientId, "CP" );
+        this.monthlyInterest = 0.01;
+    }
+
+    @Override
+    public void updateMonthly() {
+        this.balance += this.monthlyInterest * this.balance;
+    }
+}
+
 class Agency {
     private Map<Integer, Account> accounts;
     private Map<String, Client> clients;
@@ -95,7 +123,7 @@ class Agency {
         if (accounts.containsKey(accountId)){
             return accounts.get(accountId);
         } else {
-            throw new Exception();
+            throw new Exception("getacount");
         }
     }
 
@@ -110,25 +138,53 @@ class Agency {
     // cria uma conta corrente e uma conta poupança e insere no mapa de contas
     // faz o vínculo cruzado colocando as contas dentro do objeto do cliente
     public void addClient(String clientId) {
+        Client esse = new Client(clientId);
+        this.clients.put(clientId, esse);
+
+        Account cc = new CheckingAccount(clientId);
+        accounts.put(cc.getId(), cc);
+        Account cp = new SavingsAccount(clientId);
+        accounts.put(cp.getId(), cp);
+
+        esse.addAccount(cc);
+        esse.addAccount(cc);
     }
 
     // procura pela conta usando o getAccount e realiza a operação de depósito
     // utiliza o método deposit da classe Account
     public void deposit(int accId, double value) {
+        try {
+            getAccount(accId).deposit(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // procura pela conta e realiza a operação de saque
     // utiliza o método withdraw da classe Account
     public void withdraw(int accId, double value) {
+        try {
+            getAccount(accId).withdraw(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // procura pela conta e realiza a operação de transferência
     // utiliza o método transfer da classe Account
     public void transfer(int fromAccId, int toAccId, double value) {
+        try {
+            getAccount(fromAccId).transfer(getAccount(toAccId), value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // realiza a operação de atualização mensal em todas as contas
     public void updateMonthly() {
+        for ( Account acc : this.accounts.values() ) {
+            acc.updateMonthly();
+        }
     }
 
     @Override
