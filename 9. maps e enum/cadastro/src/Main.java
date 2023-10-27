@@ -23,11 +23,7 @@ class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "clientId='" + clientId + '\'' +
-                ", accounts=" + accounts +
-                '}';
-    }
+        return this.clientId + " [" + this.accounts.get(0).getId() + ", " + this.accounts.get(1).getId() + "]\n";    }
 }
 
 abstract class Account {
@@ -38,17 +34,21 @@ abstract class Account {
     protected String typeId;
 
     public Account(String clientId, String typeId) {
+        this.accId = nextAccountId++;
         this.clientId = clientId;
         this.typeId = typeId;
         this.balance = 0;
-        this.accId = nextAccountId;
     }
 
     public void deposit(double value ) {
         this.balance += value;
     }
-    public void withdraw( double value ) {
-        this.balance -= value;
+    public void withdraw( double value ) throws Exception {
+        if (balance >= value){
+            this.balance -= value;
+        } else {
+            throw new Exception("fail: saldo insuficiente");
+        }
     }
     public void transfer( Account other, double value ) {
         if (value <= balance){
@@ -59,15 +59,10 @@ abstract class Account {
 
     @Override
     public String toString() {
-        //        DecimalFormat d = new DecimalFormat("0.00"); //double x = 4.3; System.out.println( d.format(x) ); //4.30
-        return "Account{" +
-                "balance=" + balance +
-                ", accId=" + accId +
-                ", clientId='" + clientId + '\'' +
-                ", typeId='" + typeId + '\'' +
-                '}';
+        // 0:Almir:0.00:CC
+        DecimalFormat d = new DecimalFormat("0.00"); //double x = 4.3; System.out.println( d.format(x) ); //4.30
+        return this.accId + ":" + this.clientId + ":" + d.format(this.balance) + ":" + this.typeId + "\n";
     }
-
     public double getBalance() {
         return balance;
     }
@@ -87,6 +82,34 @@ abstract class Account {
     public abstract void updateMonthly();
 }
 
+class CheckingAccount extends Account {
+    protected double monthlyFee;
+
+    public CheckingAccount( String clientId ) {
+        super( clientId, "CC" );
+        this.monthlyFee = 20.0;
+    }
+
+    @Override
+    public void updateMonthly() {
+        this.balance -= this.monthlyFee;
+    }
+}
+
+class SavingsAccount extends Account {
+    protected double monthlyInterest;
+
+    public SavingsAccount( String clientId ) {
+        super( clientId, "CP" );
+        this.monthlyInterest = 0.01;
+    }
+
+    @Override
+    public void updateMonthly() {
+        this.balance += this.monthlyInterest * this.balance;
+    }
+}
+
 class Agency {
     private Map<Integer, Account> accounts;
     private Map<String, Client> clients;
@@ -95,7 +118,7 @@ class Agency {
         if (accounts.containsKey(accountId)){
             return accounts.get(accountId);
         } else {
-            throw new Exception();
+            throw new Exception("getacount");
         }
     }
 
@@ -110,25 +133,54 @@ class Agency {
     // cria uma conta corrente e uma conta poupança e insere no mapa de contas
     // faz o vínculo cruzado colocando as contas dentro do objeto do cliente
     public void addClient(String clientId) {
+        Client esse = new Client(clientId);
+        this.clients.put(clientId, esse);
+
+        Account cc = new CheckingAccount(clientId);
+        Account cp = new SavingsAccount(clientId);
+
+        accounts.put(cc.getId(), cc);
+        accounts.put(cp.getId(), cp);
+
+        esse.addAccount(cc);
+        esse.addAccount(cp);
     }
 
     // procura pela conta usando o getAccount e realiza a operação de depósito
     // utiliza o método deposit da classe Account
-    public void deposit(int accId, double value) {
+    public void deposit(int accId, double value) throws Exception {
+        try {
+            getAccount(accId).deposit(value);
+        } catch (Exception e) {
+            throw new Exception("as");
+        }
     }
 
     // procura pela conta e realiza a operação de saque
     // utiliza o método withdraw da classe Account
-    public void withdraw(int accId, double value) {
+    public void withdraw(int accId, double value) throws Exception {
+        try {
+            getAccount(accId).withdraw(value);
+        } catch (Exception e) {
+            throw new Exception("fail: saldo insuficiente");
+        }
     }
 
     // procura pela conta e realiza a operação de transferência
     // utiliza o método transfer da classe Account
-    public void transfer(int fromAccId, int toAccId, double value) {
+    public void transfer(int fromAccId, int toAccId, double value) throws Exception {
+        try {
+            getAccount(fromAccId).transfer(getAccount(toAccId), value);
+        } catch (Exception e) {
+            throw new Exception("fail: conta nao encontrada");
+        }
     }
 
     // realiza a operação de atualização mensal em todas as contas
     public void updateMonthly() {
+        for ( Account acc : this.accounts.values() ) {
+            acc.updateMonthly();
+        }
     }
 
     @Override
@@ -145,7 +197,7 @@ class Agency {
     }
 }
 
-public class Solver {
+    public class Solver {
     public static void main(String[] arg) {
         Agency agency = new Agency();
 
