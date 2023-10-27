@@ -197,7 +197,7 @@ class Agency {
     }
 }
 
-    public class Solver {
+public class Solver {
     public static void main(String[] arg) {
         Agency agency = new Agency();
 
