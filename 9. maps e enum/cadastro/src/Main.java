@@ -148,31 +148,31 @@ class Agency {
 
     // procura pela conta usando o getAccount e realiza a operação de depósito
     // utiliza o método deposit da classe Account
-    public void deposit(int accId, double value) {
+    public void deposit(int accId, double value) throws Exception {
         try {
             getAccount(accId).deposit(value);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Exception("as");
         }
     }
 
     // procura pela conta e realiza a operação de saque
     // utiliza o método withdraw da classe Account
-    public void withdraw(int accId, double value) {
+    public void withdraw(int accId, double value) throws Exception {
         try {
             getAccount(accId).withdraw(value);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Exception("fail: saldo insuficiente");
         }
     }
 
     // procura pela conta e realiza a operação de transferência
     // utiliza o método transfer da classe Account
-    public void transfer(int fromAccId, int toAccId, double value) {
+    public void transfer(int fromAccId, int toAccId, double value) throws Exception {
         try {
             getAccount(fromAccId).transfer(getAccount(toAccId), value);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Exception("fail: conta nao encontrada");
         }
     }
 
